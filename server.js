@@ -2,14 +2,47 @@ const express = require('express');
 const app = express();
 const fs = require('fs')
 const youtubedl = require('youtube-dl')
+const bodyParser = require('body-parser')
 
 // set view engine
 app.set("view engine", "ejs")
+
+// Use body-parser
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 // Route
 app.get('/', (req, res) => {
     res.render('index');
 })
+
+app.post('/video360', (req, res) => {
+    var url = req.body.url
+    console.log(url);
+
+    youtubedl.getInfo(url, ['--format=18'], function(err, info) {
+        if (err) throw err
+        res.send(info.url)
+            //console.log('url:', info.url)
+            //console.log('size: ' + info.size)
+            //console.log('filename: ' + info._filename)
+
+    })
+})
+
+app.post('/video720', (req, res) => {
+    var url = req.body.url
+    console.log(url);
+
+    youtubedl.getInfo(url, ['--format=22'], function(err, info) {
+        if (err) throw err
+        res.send(info.url)
+    })
+})
+
+
 
 // const video = youtubedl('https://www.youtube.com/watch?v=dh0ToEruFVg',
 //     // Optional arguments passed to youtube-dl.
